@@ -6,6 +6,9 @@
 # }}}1
 #===============================================================================
 
+# profile
+# zmodload zsh/zprof
+
 #===============================================================================
 # MacroFunction: "{{{1
 
@@ -43,62 +46,28 @@ esac
 
 #===============================================================================
 # Path: "{{{1
-
-# PATH
-
-# Does not register a duplicate PATH.
-# typeset -U path
-# 
-# path=(
-#   # ~/bin
-#   $HOME/bin(N-/)
-#   # Homebrew
-#   $HOME/brew/bin(N-/)
-#   # rbenv
-#   $HOME/.rbenv/bin(N-/)
-#   # rvm
-#   $HOME/.rvm/bin(N-/)
-#   # cabal
-#   $HOME/.cabal/bin(N-/)
-#   # System
-#   {/usr/local,/usr/local/share/npm,/usr,}/bin(N-/)
-#   # Mac
-#   /usr/X11/bin(N-/)
-# )
-# 
-# # SUDO_PATH
-# typeset -xT SUDO_PATH sudo_path
-# typeset -U sudo_path
-# sudo_path=({,/usr/local,/usr}/sbin(N-/))
-# 
-# PATH=$PATH:$SUDO_PATH
-# 
-
-case ${OSTYPE} in
-  darwin*)
-    export VIM_APP_DIR="/opt/homebrew-cask/Caskroom/macvim-kaoriya/7.4.1655"
-    ;;
-esac
-
+_PATH=$PATH
 # PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 case ${OSTYPE} in
   darwin*)
     typeset -U path
     path=(
-      $VIM_APP_DIR/MacVim.app/Contents/MacOS(N-/)
       $HOME/bin(N-/)
-      $HOME/.brew/bin(N-/)
       /usr/local/bin(N-/)
+      /usr/local/share/git-core/contrib/diff-highlight(N-/)
+      /usr/local/opt/imagemagick@6/bin(N-/)
       /usr/bin(N-/)
       /bin(N-/)
       /usr/X11/bin(N-/)
     )
     if [ -d $HOME/.anyenv ] ; then
       path=($HOME/.anyenv/bin(N-/) $path)
-      eval "$(anyenv init -)"
-      for D in `ls $HOME/.anyenv/envs`
-      do
-        path=($HOME/.anyenv/envs/$D/shims(N-/) $path)
+      for D in `ls $HOME/.anyenv/envs`; do
+        path=(
+          $HOME/.anyenv/envs/$D/bin(N-/)
+          $HOME/.anyenv/envs/$D/shims(N-/)
+          $path
+        )
       done
     fi
     path=(
@@ -106,6 +75,35 @@ case ${OSTYPE} in
       /usr/local/sbin(N-/)
       /usr/sbin(N-/)
       /sbin(N-/)
+    )
+    ;;
+  linux*)
+    typeset -U path
+    path=(
+      $HOME/bin(N-/)
+      /usr/local/bin(N-/)
+      /usr/local/share/git-core/contrib/diff-highlight(N-/)
+      /usr/local/opt/imagemagick@6/bin(N-/)
+      /usr/bin(N-/)
+      /bin(N-/)
+      /usr/X11/bin(N-/)
+    )
+    if [ -d $HOME/.anyenv ] ; then
+      path=($HOME/.anyenv/bin(N-/) $path)
+      for D in `ls $HOME/.anyenv/envs`; do
+        path=(
+          $HOME/.anyenv/envs/$D/bin(N-/)
+          $HOME/.anyenv/envs/$D/shims(N-/)
+          $path
+        )
+      done
+    fi
+    path=(
+      $path
+      /usr/local/sbin(N-/)
+      /usr/sbin(N-/)
+      /sbin(N-/)
+      $_PATH
     )
     ;;
 esac
@@ -121,10 +119,20 @@ pkg_config_path=({/usr/local,/usr}/lib/pkgconfig(N-/))
 case ${OSTYPE} in
   darwin*)
     export JAVA_HOME=$(/usr/libexec/java_home)
-    export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
-    export CLASSPATH=$CLASSPATH:$CATALINA_HOME/common/lib:$CATALINA_HOME/common/lib/servlet-api.jar
-    export CLASSPATH_PREFIX=$JAVA_HOME/jre/lib/mysql-connector-java-5.1.26-bin.jar
+    #export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar
+    #export CLASSPATH=$CLASSPATH:$CATALINA_HOME/common/lib:$CATALINA_HOME/common/lib/servlet-api.jar
+    #export CLASSPATH_PREFIX=$JAVA_HOME/jre/lib/mysql-connector-java-5.1.26-bin.jar
     export GRAPHVIZ_DOT=`brew --prefix`/bin/dot
+    ;;
+esac
+
+# Android SDK
+case ${OSTYPE} in
+  darwin*)
+    if [ -d /usr/local/share/android-sdk ]; then
+      export ANDROID_SDK_ROOT=/usr/local/share/android-sdk
+      export ANDROID_HOME=/usr/local/share/android-sdk
+    fi
     ;;
 esac
 
@@ -215,19 +223,9 @@ fi
 #===============================================================================
 
 #===============================================================================
-# sed: "{{{1
-
-if type gsed > /dev/null 2>&1; then
-  alias sed=gsed
-fi
-
-# "}}}1
-#===============================================================================
-
-#===============================================================================
 # editor: "{{{1
 
-export EDITOR=vim
+export EDITOR=nvim
 export BUNDLE_EDITOR=$EDITOR
 
 # "}}}1
@@ -248,9 +246,6 @@ if type /usr/local/bin/zsh > /dev/null 2>&1; then
   export SHELL=/usr/local/bin/zsh
 fi
 
-if type $HOME/.brew/bin/zsh > /dev/null 2>&1; then
-  export SHELL=$HOME/.brew/bin/zsh
-fi
 # "}}}1
 #===============================================================================
 
@@ -260,6 +255,9 @@ fi
 case ${OSTYPE} in
   linux*)
     export LIBGL_ALWAYS_INDIRECT=1
+    ;;
+  darwin*)
+    export COLORTERM=truecolor
     ;;
 esac
 

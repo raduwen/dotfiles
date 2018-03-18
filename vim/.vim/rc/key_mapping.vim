@@ -4,14 +4,13 @@
 nnoremap <space> :
 vnoremap <space> :
 
-" inoremap <c-f> <esc>
+inoremap <c-f> <esc>
+inoremap <expr> j  getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 
 cmap <c-h> <left>
 cmap <c-l> <right>
 cmap <c-e> <end>
 cmap <c-a> <home>
-
-nnoremap vv <c-v>
 
 nnoremap M `
 " Fix Current buffer indent.
@@ -20,24 +19,20 @@ nnoremap <Tab>= ggvG=2<C-o>
 " Switch buffer.
 nnoremap <C-q> <C-^>
 
-" Switch wrap.
-nnoremap <silent><C-e>tw :<C-u>setlocal wrap! wrap?<CR>
+" Continuously increment/decrement
+vnoremap <C-a> <C-a>gv
+vnoremap <C-x> <C-x>gv
 
 nnoremap [mybind] Nop
 nmap <C-e> [mybind]
 
-if exists('$MYVIMRC')
-  nnoremap <silent> [mybind]v :<C-u>e $MYVIMRC<CR>
-  nnoremap [mybind]V :<C-u>source $MYVIMRC<CR>
-endif
-if exists('$MYGVIMRC')
-  nnoremap <silent> [mybind]gv :<C-u>e $MYGVIMRC<CR>
-  nnoremap [mybind]gV :<C-u>source $MYGVIMRC<CR>
-endif
-if exists('$MYVIMFILES/Vimfile')
-  nnoremap <silent> [mybind]bv :<C-u>e $MYVIMFILES/Vimfile<CR>
-  nnoremap [mybind]bV :<C-u>source $MYVIMFILES/Vimfile<CR>
-endif
+" Switch wrap.
+nnoremap <silent> [mybind]tw :<C-u>setlocal wrap! wrap?<CR>
+
+nnoremap <silent> [mybind]v :<C-u>e ~/volt/rc/default/vimrc.vim<CR>
+nnoremap [mybind]V :<C-u>source ~/volt/rc/default/vimrc.vim<CR>
+nnoremap <silent> [mybind]gv :<C-u>e ~/volt/rc/default/gvimrc.vim<CR>
+nnoremap [mybind]gV :<C-u>source ~/volt/rc/default/gvimrc.vim<CR>
 
 " Change current window and size.
 nnoremap <silent> [mybind]h <c-w>h:call GoodWinWidth()<cr>
@@ -71,6 +66,8 @@ nnoremap <silent> [mybind]tn :<C-u>set relativenumber!<CR>
 nnoremap <silent> [mybind]/  :vimgrep  %<left><left>
 nnoremap <silent> [mybind]n  :cnext<CR>
 nnoremap <silent> [mybind]N  :cprevious<CR>
+
+nnoremap <silent> gm :call GotoCenter()<CR>
 
 " }}}1
 "===============================================================================

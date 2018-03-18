@@ -1,24 +1,24 @@
 "===============================================================================
 " Edit: "{{{1
 
-call my#mkdir_p(g:vim_tmp_directory.'/backup')
-call my#mkdir_p(g:vim_tmp_directory.'/swap')
-call my#mkdir_p(g:vim_tmp_directory.'/undo')
+call my#mkdir_p(expand('~/.local/share/vim/backup'))
+call my#mkdir_p(expand('~/.local/share/vim/swap'))
+call my#mkdir_p(expand('~/.local/share/vim/undo'))
 
 " Create backup files.
 set backup
 set nowritebackup
-let &backupdir=g:vim_tmp_directory.'/backup'
+let &backupdir=expand('~/.local/share/vim/backup')
 
 " Create swap files.
 set swapfile
 " Set swapfile save directory.
-let &directory=g:vim_tmp_directory.'/swap'
+let &directory=expand('~/.local/share/vim/swap')
 
 if v:version >= 703
   " Set undo file.
   set undofile
-  let &undodir=g:vim_tmp_directory.'/undo'
+  let &undodir=expand('~/.local/share/vim/undo')
 endif
 
 " CursorHold time.
@@ -26,14 +26,16 @@ endif
 set updatetime=200
 
 " Keymapping timeout.
-set timeout timeoutlen=750 ttimeoutlen=200
+set timeout timeoutlen=750 ttimeoutlen=0
 
 " Enable backspace delete indent and newline.
 set backspace=indent,eol,start
 
 " Use clipboard register.
 set clipboard& clipboard+=unnamed
-set clipboard+=autoselect
+if has('gui')
+  set clipboard+=autoselect
+endif
 
 " Auto read if file is changed.
 set autoread

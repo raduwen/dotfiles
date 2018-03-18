@@ -40,6 +40,8 @@ set cmdheight=2
 " Show command on statusline.
 set showcmd
 
+let &statusline="%<%f%=%m%r%w%y[%{(&fenc!=''?&fenc:&enc)}][%{&ff}][%04l:%03v/%p%%]"
+
 " Show title.
 set title
 " Title length.
@@ -95,10 +97,15 @@ set display=lastline
 " Put cursor on non-whitespace in case of moved line.
 set startofline
 
-set cursorline
+set nocursorline
 augroup MyCursorColumnGrp
   autocmd!
   autocmd FileType yaml setlocal cursorcolumn
+augroup END
+
+augroup CppColorColumnGrp
+  autocmd!
+  autocmd FileType cpp setlocal colorcolumn=120
 augroup END
 
 " Enable spell check.
@@ -116,6 +123,9 @@ set report=0
 
 " Don't redraw while macro executing.
 set lazyredraw
+
+set conceallevel=0
+set concealcursor=
 
 " }}}1
 "===============================================================================

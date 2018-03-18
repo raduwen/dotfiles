@@ -1,0 +1,8 @@
+for dir in `ghq list -p`; do
+  echo "updating... : $dir"
+  cd $dir
+  git fetch --all --prune && git pull &
+done
+wait
+
+# vim: ft=zsh

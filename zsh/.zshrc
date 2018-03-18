@@ -7,50 +7,51 @@
 #===============================================================================
 
 #===============================================================================
-# Initialisation: "{{{1
+# Aynenv: "{{{1
 
-setopt global_export
-setopt global_rcs
-setopt rcs
+[ -f ~/.anyenv/bin/anyenv ] && eval "$(anyenv init - --no-rehash)"
+[ -f ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv/bin/pyenv-virtualenv ] && eval "$(pyenv virtualenv-init - zsh)"
 
-# "}}}1
+# }}}1
 #===============================================================================
 
-#===============================================================================
-# Input/Output: "{{{1
+source ~/.config/zsh/options.zsh
 
-setopt aliases
-setopt clobber
-setopt no_flow_control
-setopt ignore_eof
-setopt hash_cmds
-setopt hash_dirs
-setopt path_dirs
-setopt short_loops
+case ${OSTYPE} in
+  darwin*)
+    fpath=(
+      $HOME/.config/zsh/completions(N-/)
+      $HOME/.config/zsh/functions/*(N-/)
+      $fpath
+    )
+    ;;
+esac
 
-# "}}}1
-#===============================================================================
+autoload -Uz compinit
+compinit
+#if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]; then
+#  compinit
+#else
+#  compinit -C
+#fi
 
-#===============================================================================
-# Job Control: "{{{1
+cdpath=($HOME)
+chpwd_functions=($chpwd_functions dirs)
 
-setopt bg_nice
-setopt check_jobs
-setopt hup
-setopt long_list_jobs
-setopt notify
+source $HOME/.config/zsh/git.zsh
 
-# "}}}1
-#===============================================================================
+if type go > /dev/null 2>&1; then
+  source $HOME/.config/zsh/go.zsh
+fi
+if type peco > /dev/null 2>&1; then
+  source $HOME/.config/zsh/peco.zsh
+fi
+source $HOME/.config/zsh/ruby.zsh
+source $HOME/.config/zsh/fzf.zsh
+source $HOME/.config/zsh/python.zsh
 
 #===============================================================================
 # Prompting: "{{{1
-
-setopt prompt_cr
-setopt prompt_sp
-setopt prompt_percent
-setopt prompt_subst
-setopt transient_rprompt
 
 #-------------------------------------------------------------------------------
 # rbenv-prompt: "{{{2
@@ -69,73 +70,6 @@ function rbenv_prompt {
 # }}}2
 #-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
-# pyenv-prompt: "{{{2
-function pyenv_prompt {
-  if type pyenv > /dev/null 2>&1; then
-    result=`pyenv version-name`
-    if [ "$result" ] ; then
-      echo "$result"
-    else
-      echo "pyenv"
-    fi
-  else
-    echo ""
-  fi
-}
-# }}}2
-#-------------------------------------------------------------------------------
-
-#-------------------------------------------------------------------------------
-# ndenv-prompt: "{{{2
-function ndenv_prompt {
-  if type ndenv > /dev/null 2>&1; then
-    result=`ndenv version-name`
-    if [ "$result" ] ; then
-      echo "$result"
-    else
-      echo "ndenv"
-    fi
-  else
-    echo ""
-  fi
-}
-# }}}2
-#-------------------------------------------------------------------------------
-
-#-------------------------------------------------------------------------------
-# scalaenv-prompt: "{{{2
-function scalaenv_prompt {
-  if type scalaenv > /dev/null 2>&1; then
-    result=`scalaenv version-name`
-    if [ "$result" ] ; then
-      echo "$result"
-    else
-      echo "scala"
-    fi
-  else
-    echo ""
-  fi
-}
-# }}}2
-#-------------------------------------------------------------------------------
-
-#-------------------------------------------------------------------------------
-# goenv-prompt: "{{{2
-function goenv_prompt {
-  if type goenv > /dev/null 2>&1; then
-    result=`goenv version`
-    if [ "$result" ] ; then
-      echo "$result"
-    else
-      echo "goenv"
-    fi
-  else
-    echo ""
-  fi
-}
-# }}}2
-#-------------------------------------------------------------------------------
 ## return prompt format expand characters count (not support Japanese)
 function count_prompt_characters()
 {
@@ -143,37 +77,18 @@ function count_prompt_characters()
 }
 
 #-------------------------------------------------------------------------------
-autoload -Uz vcs_info
-setopt prompt_subst
-zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
-zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-zstyle ':vcs_info:*' formats "%F{green}%c%u%b%f:"
-zstyle ':vcs_info:*' actionformats '%b|%a'
 
 function update_prompt() # "{{{2
 {
   # user@host(2012/03/04 05:06)[1.9.3]>>-: "{{{3
   # user@host
-  bar_left_self="%{%F{green}%}%n%{%F{yellow}%}@%{%F{red}%}%m%{%f%}"
+  bar_left_self="%{%F{magenta}%}$USER%{%F{cyan}%}@%{%F{blue}%}%m%{%f%}"
   # date: (2012/03/04 05:06)
   bar_left_date="(%D{%Y/%m/%d %H:%M:%S})"
   # rbenv : [1.9.3]
   if [ -n "$(rbenv_prompt)" ]; then
     bar_left_ruby="[%{%F{red}%}$(rbenv_prompt)%{%f%}]"
   fi
-  #if [ -n "$(pyenv_prompt)" ]; then
-  #  bar_left_python="[%{%F{blue}%}$(pyenv_prompt)%{%f%}]"
-  #fi
-  #if [ -n "$(ndenv_prompt)" ]; then
-  #  bar_left_node="[%{%F{green}%}$(ndenv_prompt)%{%f%}]"
-  #fi
-  #if [ -n "$(goenv_prompt)" ]; then
-  #  bar_left_go="[%{%F{yellow}%}$(goenv_prompt)%{%f%}]"
-  #fi
-  #if [ -n "$(scalaenv_prompt)" ]; then
-  #  bar_left_scala="[%{%F{magenta}%}$(scalaenv_prompt)%{%f%}]"
-  #fi
 
   # local bar_left="${bar_left_self}${bar_left_date}${bar_left_ruby}${bar_left_node}${bar_left_python}${bar_left_go}${bar_left_scala}>>-"
   local bar_left="${bar_left_self}${bar_left_date}${bar_left_ruby}"
@@ -186,18 +101,12 @@ function update_prompt() # "{{{2
   #   prompt_bar_right="$(git_prompt):"
   # fi
   # -<master:project>
-  prompt_bar_right="[${prompt_bar_right}%{%F{yellow}%}%c%{%f%}]"
+  prompt_bar_right="[${prompt_bar_right}%{%F{blue}%}%c%{%f%}]"
 
-  #local bar_left_length=$(count_prompt_characters "$bar_left")
-  #local bar_rest_length=$[COLUMNS - bar_left_length]
   local bar_right_without_path="${prompt_bar_right:s/%d//}"
   local bar_right_without_path_length=$(count_prompt_characters "$bar_right_without_path")
-  #local max_path_length=$[bar_rest_length - bar_right_without_path_length]
-  #bar_right=${prompt_bar_right:s/%d/%(C,%${max_path_length}<...<%d%<<,)/}
   bar_right=${prompt_bar_right:s/%d/%(C,%<...<%d%<<,)/}
-  #local separator="${(l:${bar_rest_length}::-:)}"
 
-  #bar_right="%${bar_rest_length}<<${separator}${bar_right}%<<"
   # "}}}3
 
   local prompt_left="%#%{%b%} "
@@ -205,7 +114,7 @@ function update_prompt() # "{{{2
   # user@host(2012/03/04 05:06)[1.9.3]>>-----<master:project>-<<
   # % 
   PROMPT="${bar_left}${bar_right}"$'\n'"${prompt_left}"
-  RPROMPT="[%{%B%F{magenta}%}%~%{%f%b%}]"
+  RPROMPT="[%{%F{blue}%}%~%{%f%}]"
   SPROMPT="%{[31m%}%r is correct? [n,y,a,e]:%{[m%} "
 }
 # "}}}2
@@ -222,42 +131,9 @@ precmd_functions=($precmd_functions vcs_info update_prompt update_tmux_pwd)
 #===============================================================================
 
 #===============================================================================
-# Scripts and Functions: "{{{1
-
-setopt exec
-setopt multios
-
-# "}}}1
-#===============================================================================
-
-#===============================================================================
-# Changing Directories: "{{{1
-
-setopt auto_cd
-setopt auto_pushd
-setopt chase_links
-setopt pushd_ignore_dups
-setopt pushd_to_home
-
-cdpath=($HOME)
-chpwd_functions=($chpwd_functions dirs)
-
-# "}}}1
-#===============================================================================
-
-#===============================================================================
 # Completion: "{{{1
 
 ## Initialize
-
-autoload -U compinit
-compinit
-
-case ${OSTYPE} in
-  darwin*)
-    fpath=(/usr/local/share/zsh-completions(N-/) $HOME/brew/share/zsh-completions(N-/) $fpath)
-    ;;
-esac
 
 ## Grouping completion
 zstyle ':completion:*' format '%B%d%b'
@@ -278,63 +154,6 @@ zstyle ':completion:*' varbose yes
 
 zstyle ':completion:sudo:*' environ PATH="$SUDO_PATH:$PATH"
 
-# Autoload _git completion functions
-# if declare -f _git > /dev/null; then
-#   _git
-# fi
-
-if declare -f _git_commands > /dev/null; then
-  _hub_commands=(
-    'alias:show shell instructions for wrapping git'
-    'pull-request:open a pull request on GitHub'
-    'fork:fork origin repo on GitHub'
-    'create:create new repo on GitHub for the current project'
-    'browse:browse the project on GitHub'
-    'compare:open GitHub compare view'
-  )
-  # Extend the '_git_commands' function with hub commands
-  eval "$(declare -f _git_commands | sed -e 's/base_commands=(/base_commands=(${_hub_commands} /')"
-fi
-
-setopt always_last_prompt
-setopt auto_list
-setopt auto_menu
-setopt auto_param_keys
-setopt auto_param_slash
-setopt auto_remove_slash
-setopt complete_aliases
-setopt complete_in_word
-setopt glob_complete
-setopt hash_list_all
-setopt list_ambiguous
-unsetopt list_beep
-setopt list_packed
-setopt list_types
-setopt menu_complete
-
-# "}}}1
-#===============================================================================
-
-#===============================================================================
-# Expansion and Globbing: "{{{1
-
-setopt bad_pattern
-setopt bare_glob_qual
-setopt case_glob
-setopt case_match
-setopt csh_null_glob # null_glob
-setopt equals
-setopt extended_glob
-setopt glob
-setopt magic_equal_subst
-setopt mark_dirs
-setopt multibyte
-setopt nomatch
-setopt numeric_glob_sort
-setopt rc_expand_param
-setopt rematch_pcre
-setopt unset
-
 # "}}}1
 #===============================================================================
 
@@ -345,28 +164,7 @@ HISTFILE=~/.zsh_history
 HISTSIZE=100000000
 SAVEHIST=$HISTSIZE
 
-setopt append_history
-setopt extended_history
-setopt no_hist_beep
-setopt hist_expand # bang_hist
-setopt hist_ignore_dups
-setopt hist_ignore_space
-setopt hist_reduce_blanks
-setopt hist_save_by_copy
-setopt hist_verify
-setopt inc_append_history
-setopt share_history
-
 autoload history-search-end
-
-# "}}}1
-#===============================================================================
-
-#===============================================================================
-# Zle: "{{{1
-
-setopt no_beep
-setopt vi # bindkey -v
 
 # "}}}1
 #===============================================================================
@@ -376,11 +174,16 @@ setopt vi # bindkey -v
 
 REPORTTIME=3
 
-watch="all"
-log
+# see also: http://zsh.sourceforge.net/Intro/intro_15.html
+# watch="all"
+# log
 
 WORDCHARS=${WORDCHARS:s,/,,}
 WORDCHARS="${WORDCHARS}|"
+
+function ztime {
+  time (zsh -i -c exit)
+}
 
 # "}}}1
 #===============================================================================
@@ -399,93 +202,38 @@ zle -N history-beginning-search-forward-end history-search-end
 #===============================================================================
 # Function: "{{{1
 
-# reload config files
-function reload()
-{
-  src "$HOME/.zshenv"
-  src "$HOME/.zshrc"
-}
-
-function search()
-{
-  if [ $# = 0 ]
-  then
-    echo 'usage: search [path] text'
-    return
-  fi
-  local d="."
-  local w=$1
-  if [ $# = 2 ]
-  then
-    d=$1
-    w=$2
-  fi
-  find "$d" -print0 | xargs -0 grep -nE "$w"
-}
-
-function git-rewrite-author()
-{
-  if [ $# = 0 ]
-  then
-    echo 'usage: git-rewrite-author old_name new_name new_email range'
-    return
-  fi
-
-  local old_name=$1
-  local new_name=$2
-  local new_email=$3
-  local range=$4
-
-  git filter-branch --commit-filter "
-    if [ \"\$GIT_COMMITTER_NAME\" = \"$old_name\" ];
-    then
-      GIT_COMMITTER_NAME=\"$new_name\";
-      GIT_AUTHOR_NAME=\"$new_name\";
-      GIT_COMMITTER_EMAIL=\"$new_email\";
-      GIT_AUTHOR_EMAIL=\"$new_email\";
-      git commit-tree \"\$@\";
-    else
-      git commit-tree \"\$@\";
-    fi" $range
-}
-
-function git-rewrite-author2()
-{
-  git filter-branch -f --env-filter "GIT_AUTHOR_NAME='$1'; GIT_AUTHOR_EMAIL='$2'; GIT_COMMITTER_NAME='$1'; GIT_COMMITTER_EMAIL='$2';" $3
-}
-
-function benchmark()
-{
-  if [ $# -le 1 ]; then
-    echo 'usage: benchmark num "command"'
-    return
-  fi
-
-  for i in {1..$1}; do
-    (time ($2)) |& sed -e "s/[a-z]//g" >> benchmark.tmp.log
-    print -n "."
-  done
-  print
-  ruby <<\EOS
-  ks=%i(user system cpu total);ss=Hash.new(0);i=0
-  File.open('benchmark.tmp.log'){|f|f.each_line{|line|ks.zip(line.split.map(&:to_f)).to_h.each{|k,v|ss[k]+=v};i+=1}}
-  ss.each{|k,v|puts"#{k.to_s.ljust(7)}: #{v/i}"}
-EOS
-  rm benchmark.tmp.log
-}
-function b100 { benchmark 100 $1 }
-
-function switch-user {
-  if [ $# -ne 1 ]; then
-    echo 'usage: switch-user USERNAME'
-    return
-  fi
-
-  rm $HOME/.git.d/local
-  ln -s $HOME/.git.d/local.$1 $HOME/.git.d/local
-  rm $HOME/.ssh/config
-  ln -s $HOME/.ssh/config.$1  $HOME/.ssh/config
-}
+# Benchmark
+autoload -Uz b100
+autoload -Uz benchmark
+# Docker
+autoload -Uz docker-rm-exited
+# Ghq
+autoload -Uz ghq-update
+# Git
+autoload -Uz git-force-remove-dir
+autoload -Uz git-force-remove-dir-all
+autoload -Uz git-force-remove-file
+autoload -Uz git-force-remove-file-all
+autoload -Uz git-longest-message
+autoload -Uz git-rewrite-author
+autoload -Uz git-rewrite-author2
+# Mysql
+autoload -Uz m56
+autoload -Uz m57
+# Postgresql
+autoload -Uz psql_resetdb
+# Reload
+autoload -Uz reload
+# Ruby
+autoload -Uz bundle-gemname-list
+autoload -Uz db_reset
+# Search
+autoload -Uz search
+# Ssh
+autoload -Uz peco-ssh
+alias pssh=peco-ssh
+# SwitchUser
+autoload -Uz switch-user
 alias sw=switch-user
 
 # "}}}1
@@ -496,6 +244,27 @@ alias sw=switch-user
 
 alias lv="$PAGER"
 alias less="$PAGER"
+alias lr="$PAGER -R"
+
+if type ccat > /dev/null 2>&1; then
+  alias ca='ccat'
+fi
+
+if type colordiff > /dev/null 2>&1; then
+  alias diff='colordiff'
+fi
+
+if type dfc > /dev/null 2>&1; then
+  alias df='dfc'
+fi
+
+if type gsed > /dev/null 2>&1; then
+  alias sed=gsed
+fi
+
+if type hget > /dev/null 2>&1; then
+  alias wget=hget
+fi
 
 # global: "{{{2
 
@@ -512,8 +281,6 @@ alias -g D='> /dev/null 2>&1'
 alias -g JQ="| jq '.'"
 
 # "}}}2
-
-alias rr='command rm -rf'
 
 alias ls='ls -GF'
 alias l='ls'
@@ -532,154 +299,50 @@ alias where='command -v'
 
 alias x='exit'
 
-if type gsed > /dev/null 2>&1; then
-  alias sed=gsed
+if type nvim > /dev/null 2>&1; then
+  alias vim='nvim'
+fi
+alias nv='vim -u NONE'
+alias v='nvim'
+if type /usr/local/bin/vim > /dev/null 2>&1; then
+  alias vv='/usr/local/bin/vim'
+else
+  alias vv='vim'
+fi
+compdef v=nvim
+compdef vv=vim
+
+if [ -x "`which nvim`" ] && [ -x "`which fzf`" ]; then
+  alias vf='nvim `fzf`'
 fi
 
-if type mvim > /dev/null 2>&1; then
-  alias gvim='reattach-to-user-namespace mvim'
+if type /Applications/MacVim.app/Contents/bin/mvim > /dev/null 2>&1; then
+  alias mvim=/Applications/MacVim.app/Contents/bin/mvim
+  alias memo="mvim --cmd \"let g:gui_size = 'memo'\""
 fi
 
-if type $VIM_APP_DIR/MacVim.app/Contents/MacOS/Vim > /dev/null 2>&1; then
-  alias vim="reattach-to-user-namespace $VIM_APP_DIR/MacVim.app/Contents/MacOS/Vim"
-fi
-alias vi='vim'
-alias v='vim'
-compdef v=vim
-alias gv='gvim'
-
-if type /usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs > /dev/null 2>&1; then
-  alias emacs="/usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs -nw"
-fi
-alias em=emacs
-
-# git: "{{{2
-if type hub > /dev/null 2>&1; then
-  alias git='hub'
-fi
-
-alias g='git'
-compdef g=git
-
-alias gl="g log --graph --pretty=format:'%Cblue%h%Creset%d %Cgreen%an%Creset: %s %Cblue%ar%Creset'"
-alias gc='g commit'
-alias gcm='g commit -m'
-alias gco='g checkout'
-alias grs='g reset'
-alias gd='g diff'
-alias ga='g add'
-alias gs='g status'
-alias gpl='g pull'
-alias gps='g push'
-alias gsm='g submodule'
-alias gst='g subtree'
-alias gsu="g submodule foreach 'git checkout master; git pull'"
-alias grmal='git ls-files -z --deleted | xargs -0 git rm'
-alias tiga='tig --all'
-
-case ${OSTYPE} in
-  darwin*)
-    alias gnw=/usr/local/opt/git/share/git-core/contrib/workdir/git-new-workdir
-    ;;
-esac
-
-# "}}}2
+alias e='emacs'
 
 # docker: "{{{2
 
 # alias d='docker'
 # compdef d=docker
 alias dm='docker-machine'
-alias b2d='boot2docker'
-_boot2docker() {
-  local context state line
-
-  _arguments -C \
-    --basevmdk'[Path to VMDK to use as base for persistent partition]:vmdk:' \
-    --dhcp'[enable VirtualBox host-only network DHCP. default=true]' \
-    --dhcpip'[VirtualBox host-only network DHCP server address. default=192.168.59.99]' \
-    '(-s --disksize)'{-s,--disksize}'[boot2docker disk image size (in MB). default=20000.]:disksize:' \
-    --dockerport'[host Docker port (forward to port 2375 in VM).]:PORT:' \
-    --hostip'[VirtualBox host-only network IP address.]:IP:' \
-    --iso'[path to boot2docker ISO image.]:FILE:_files' \
-    --lowerip'[VirtualBox host-only network DHCP lower bound.]:IP:' \
-    '(-m --memory)'{-m,--memory}'[virtual machine memory size (in MB). default=2048]' \
-    --netmask'[VirtualBox host-only network mask.]' \
-    --serial'[try serial console to get IP address (experimental) default=false]' \
-    --serialfile'[path to the serial socket/pipe.]:FILE:_files' \
-    --ssh'[path to SSH client utility. default="ssh"]:SSH:' \
-    --ssh-keygen'[path to ssh-keygen utility. default="ssh-keygen"]:KEYGEN:' \
-    --sshkey'[path to SSH key to use.]:FILE:_files' \
-    --sshport'[host SSH port (forward to port 22 in VM). default=2022]:PORT:' \
-    --upperip'[VirtualBox host-only network DHCP upper bound. default=192.168.59.254]:IP:' \
-    --vbm'[path to VirtualBox management utility. default="VBoxManage"]' \
-    '(-v --verbose)'{-v,--verbose}'[display verbose command invocations. default=false]' \
-    --vm'[virtual machine name. default="boot2docker-vm"]' \
-    '*::boot2docker commands:_boot2docker_command'
-}
-
-(( $+functions[_boot2docker_command] )) ||
-_boot2docker_command() {
-  local _boot2docker_cmds
-
-  _boot2docker_cmds=(
-    'init:Create a new boot2docker VM.' \
-    'up:Start VM from any states.' \
-    'start:Start VM from any states.' \
-    'boot:Start VM from any states.' \
-    'ssh:Login to VM via SSH.' \
-    'save:Suspend VM and save state to disk.' \
-    'suspend:Suspend VM and save state to disk.' \
-    "down:Gracefully shutdown the VM." \
-    "stop:Gracefully shutdown the VM." \
-    "halt:Gracefully shutdown the VM." \
-    "restart:Gracefully reboot the VM." \
-    "poweroff:Forcefully power off the VM (might corrupt disk image)." \
-    "reset:Forcefully power cycle the VM (might corrupt disk image)." \
-    "delete:Delete boot2docker VM and its disk image." \
-    "destroy:Delete boot2docker VM and its disk image." \
-    "config:Show selected profile file settings." \
-    "cfg:Show selected profile file settings." \
-    "info:Display detailed information of VM." \
-    "ip:Display the IP address of the VM's Host-only network." \
-    "status:Display current state of VM." \
-    "download:Download boot2docker ISO image." \
-    "upgrade:Upgrade the boot2docker ISO image (if vm is running it will be stopped and started)." \
-    "version:Display version information."
-    )
-
-  if (( CURRENT == 1 )); then
-    _describe -t commands 'boot2docker subcommand' _boot2docker_cmds
-  fi
-}
-compdef _boot2docker boot2docker
-compdef _boot2docker b2d
 
 # }}}2
 
 alias nko='nkf --overwrite'
-alias tree='tree -N'
+alias tree='tree -N -F -C --dirsfirst'
 alias s='search'
 
-# Applicatioin alias
-function app_alias()
-{
-  local APP=$1
-  shift
-  for i in $@; do;
-    alias -s $i=${APP}
-  done;
-}
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+alias -g F='| fzf --ansi --reverse'
+alias -g FR='| fzf --ansi --reverse --tac'
+alias -g FT='| fzf-tmux -d 10 --ansi --revsere'
 
-# app_alias gv c cpp h rb php html haml mkd md txt
-# app_alias gv js ru py pl hs lhs sql conf
-
-if type /Applications/Gyazo.app/Contents/MacOS/Gyazo> /dev/null 2>&1; then
-  alias gyazo='/Applications/Gyazo.app/Contents/MacOS/Gyazo "$@"'
-fi
-if type ~/Applications/Gyazo.app/Contents/MacOS/Gyazo> /dev/null 2>&1; then
-  alias gyazo='~/Applications/Gyazo.app/Contents/MacOS/Gyazo "$@"'
-fi
+alias gb='git branch | fzf-tmux -d 10 --ansi --reverse'
+alias gco='git checkout `gb`'
+alias gr='git rebase `gb`'
 
 if type tmux > /dev/null 2>&1; then
   alias t='tmux'
@@ -692,22 +355,26 @@ if type tmux > /dev/null 2>&1; then
   alias vs='tmux split-window -h'
 fi
 
-if type ~/Applications/Shoes.app/Contents/MacOS/shoes > /dev/null 2>&1; then
-  alias shoes='~/Applications/Shoes.app/Contents/MacOS/shoes "$@"'
+if type terminal-notifier > /dev/null 2>&1; then
+  alias tndone='terminal-notifier -message done'
 fi
 
 # added by travis gem
-[ -f /Users/raduwen/.travis/travis.sh ] && source /Users/raduwen/.travis/travis.sh
+src $HOME/.travis/travis.sh
 
 # "}}}1
 #===============================================================================
 
-src $HOME/.zsh.d/git.zsh
-src $HOME/.zsh.d/go.zsh
-src $HOME/.zsh.d/ghq.zsh
-src $HOME/.zsh.d/peco.zsh
-src $HOME/.zsh.d/ruby.zsh
+src $HOME/.iterm2_shell_integration.zsh
+
+if [ ! -f ~/.zshrc.zwc -o ~/.zshrc -nt ~/.zshrc.zwc ]; then
+  zcompile ~/.zshrc
+fi
 
 src $HOME/.zshrc.local
+
+if type zprof > /dev/null 2>&1; then
+  zprof | less
+fi
 
 # vim: ft=zsh fdm=marker et sw=2 sts=2 ts=2
