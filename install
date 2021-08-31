@@ -1,3 +1,67 @@
 #!/bin/bash
 
+SCRITP_PATH=$(cd $(dirname $0); pwd)
 
+case "$OSTYPE" in
+  linux*)
+    if ! command -v git > /dev/null 2>&1; then
+      sudo apt-get install -y build-essential procps curl file git
+    fi
+    ;;
+  darwin*)
+    if ! command -v git > /dev/null 2>&1; then
+      xcode-select --install
+    fi
+    ;;
+esac
+
+if ! command -v git > /dev/null 2>&1; then
+  echo "git is not installed"
+  exit 1
+fi
+
+SOURCE_PATH="${HOME}/.local/src/github.com"
+
+mkdir -p "${SOURCE_PATH}"
+
+# string formatters
+if [[ -t 1 ]]; then
+  tty_escape() { printf "\033[%sm" "$1"; }
+else
+  tty_escape() { :; }
+fi
+tty_mkbold() { tty_escape "1;$1"; }
+tty_blue="$(tty_mkbold 34)"
+tty_bold="$(tty_mkbold 39)"
+tty_reset="$(tty_escape 0)"
+
+shell_join() {
+  local arg
+  printf "%s" "$1"
+  shift
+  for arg in "$@"; do
+    printf " "
+    printf "%s" "${arg// /\ }"
+  done
+}
+
+ohai() {
+  printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$(shell_join "$@")"
+}
+
+install_or_update() {
+  repo=$1
+  ohai "install $repo"
+  if [ ! -d "${SOURCE_PATH}/${repo}" ]; then
+    git clone git@github.com/${repo}.git "${SOURCE_PATH}/${repo}"
+  else
+    git -C "${SOURCE_PATH}/${repo}" fetch --all --prune
+    git -C "${SOURCE_PATH}/${repo}" pull
+  fi
+  "${SOURCE_PATH}/${repo}"/install
+}
+
+install_or_update raduwen/zsh-config
+install_or_update raduwen/nvim-config
+
+# vim: ts=2 sts=2 sw=2 et
