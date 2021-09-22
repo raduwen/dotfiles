@@ -61,6 +61,7 @@ install_or_update() {
   "${SOURCE_PATH}/${repo}"/install
 }
 
+install_or_update raduwen/git-config
 install_or_update raduwen/zsh-config
 install_or_update raduwen/vim-config
 install_or_update raduwen/nvim-config
