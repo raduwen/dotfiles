@@ -62,6 +62,7 @@ install_or_update() {
 }
 
 install_or_update raduwen/zsh-config
+install_or_update raduwen/vim-config
 install_or_update raduwen/nvim-config
 install_or_update raduwen/tmux-config
 
