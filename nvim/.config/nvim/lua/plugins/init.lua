@@ -202,12 +202,23 @@ return require("packer").startup(function(use)
         end
       })
 
+      -- TODO: nvim_create_augroup
+      -- TODO: nvim_create_autocmd
       vim.cmd[[
         augroup scrollbar_search_hide
           autocmd!
           autocmd CmdlineLeave : lua require("scrollbar.handlers.search").handler.hide()
         augroup END
       ]]
+    end
+  })
+
+  -- align
+  use({
+    "junegunn/vim-easy-align",
+    config = function()
+      vim.keymap.set("n", "<leader>ga", "<Plug>(EasyAlign)", {})
+      vim.keymap.set("x", "<leader>ga", "<Plug>(EasyAlign)", {})
     end
   })
 
