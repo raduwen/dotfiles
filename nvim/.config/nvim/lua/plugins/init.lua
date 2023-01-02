@@ -18,6 +18,7 @@ return require("packer").startup(function(use)
   use("wbthomason/packer.nvim")
 
   use("nvim-tree/nvim-web-devicons")
+  use("rcarriga/nvim-notify")
 
   -- colorscheme
   use({
@@ -63,10 +64,17 @@ return require("packer").startup(function(use)
   use({
     "folke/trouble.nvim",
     requires = "nvim-tree/nvim-web-devicons",
-    config= function()
+    config = function()
       require("trouble").setup({})
     end
   })
+  use({
+    "j-hui/fidget.nvim",
+    config = function()
+      require("fidget").setup({})
+    end
+  })
+
   use({
     "hrsh7th/nvim-cmp",
     config = function()
@@ -88,12 +96,12 @@ return require("packer").startup(function(use)
     requires = "nvim-lua/plenary.nvim",
   })
   use("uga-rosa/cmp-dictionary")
-  -- use("saadparwaiz1/cmp_luasnip")
+  -- use({
+  --   "saadparwaiz1/cmp_luasnip",
+  --   requires = "L3MON403/LuaSnip",
+  -- })
   use("ray-x/cmp-treesitter")
-  use({
-    "onsails/lspkind.nvim",
-    requires = "L3MON403/LuaSnip",
-  })
+  use("onsails/lspkind.nvim")
 
   -- snippet
   -- use("L3MON403/LuaSnip")
