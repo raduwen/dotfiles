@@ -1,3 +1,5 @@
+[[ $UID > 0 && $UID == $GID ]] && umask 002 || umask 022
+
 typeset -U path
 
 path=(
