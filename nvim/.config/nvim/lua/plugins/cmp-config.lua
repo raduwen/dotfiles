@@ -1,19 +1,14 @@
 local lsp = require("lspconfig")
 local lspkind = require("lspkind")
+local navic = require("nvim-navic")
 
-lsp.tsserver.setup({})
-lsp.solargraph.setup({})
--- lsp.typeprof
--- lsp.steep
-lsp.sumneko_lua.setup({})
--- lsp.clangd.setup({})
--- lsp.dockerls.setup({})
--- lsp.jsonls.setup({})
--- lsp.gopls.setup({})
--- lsp.golangci_lint_ls.setup({})
--- lsp.yamlls({})
--- lsp.tailwindcss({})
--- lsp.rust_analyzer({})
+local on_attach = function(client, bufnr)
+  -- ...
+  if client.server_capabilities.documentSymbolProvider then
+    navic.attach(client, bufnr)
+  end
+  -- ...
+end
 
 local cmp = require("cmp")
 local cmp_sources = {
@@ -85,3 +80,23 @@ require("cmp_dictionary").setup({
     -- spellang = {},
   },
 })
+
+lsp.tsserver.setup({
+  on_attach = on_attach
+})
+lsp.solargraph.setup({
+  on_attach = on_attach
+})
+-- lsp.typeprof
+-- lsp.steep
+lsp.sumneko_lua.setup({
+  on_attach = on_attach
+})
+-- lsp.clangd.setup({})
+-- lsp.dockerls.setup({})
+-- lsp.jsonls.setup({})
+-- lsp.gopls.setup({})
+-- lsp.golangci_lint_ls.setup({})
+-- lsp.yamlls({})
+-- lsp.tailwindcss({})
+-- lsp.rust_analyzer({})
