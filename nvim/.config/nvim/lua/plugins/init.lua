@@ -123,6 +123,25 @@ return require("packer").startup(function(use)
     requries = "neovim/nvim-lspconfig"
   })
 
+  -- file explorer
+  use({
+    "nvim-tree/nvim-tree.lua",
+    requires = "nvim-tree/nvim-web-devicons",
+    config = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+
+      require("nvim-tree").setup({
+        view = {
+          adaptive_size = true,
+        },
+        filters = {
+          dotfiles = false,
+        },
+      })
+    end
+  })
+
   if packer_bootstrap then
     require("packer").sync()
   end
