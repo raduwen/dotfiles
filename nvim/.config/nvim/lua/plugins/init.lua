@@ -178,6 +178,39 @@ return require("packer").startup(function(use)
     end
   })
 
+  -- scrollbar
+  use({
+    "petertriho/nvim-scrollbar",
+    requires = {"lewis6991/gitsigns.nvim", "kevinhwang91/nvim-hlslens"},
+    config = function()
+      require("scrollbar").setup()
+    end
+  })
+  use({
+    "lewis6991/gitsigns.nvim",
+    config = function()
+      require("gitsigns").setup()
+      require("scrollbar.handlers.gitsigns").setup()
+    end
+  })
+  use({
+    "kevinhwang91/nvim-hlslens",
+    config = function()
+      require("hlslens").setup({
+        build_position_cb = function(plist, _, _, _)
+          require("scrollbar.handlers.search").handler.show(plist.start_pos)
+        end
+      })
+
+      vim.cmd[[
+        augroup scrollbar_search_hide
+          autocmd!
+          autocmd CmdlineLeave : lua require("scrollbar.handlers.search").handler.hide()
+        augroup END
+      ]]
+    end
+  })
+
   if packer_bootstrap then
     require("packer").sync()
   end
