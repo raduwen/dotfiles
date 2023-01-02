@@ -27,7 +27,3 @@ fi
 if [ -f $HOME/.cargo/env ]; then
   . $HOME/.cargo/env
 fi
-
-PROMPT="%{%F{magenta}%}$USER%{%F{cyan}%}@%{%F{blue}%}%m%{%f%}(%D{%Y/%m/%d %H:%M:%S})
-$ "
-RPROMPT="[%{%F{blue}%}%~%{%f%}]"

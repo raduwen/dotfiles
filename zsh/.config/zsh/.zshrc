@@ -29,3 +29,7 @@ alias gcm="git commit -m"
 alias t="tmux"
 alias tat="tmux attach -t"
 alias tls="tmux ls"
+
+PROMPT="%{%F{magenta}%}$USER%{%F{cyan}%}@%{%F{blue}%}%m%{%f%}(%D{%Y/%m/%d %H:%M:%S})
+$ "
+RPROMPT="[%{%F{blue}%}%~%{%f%}]"
