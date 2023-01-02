@@ -7,9 +7,15 @@ fpath=(
 autoload -Uz compinit
 compinit
 
-alias ls="ls -GF"
-alias la="ls -A"
-alias ll="ls -lA"
+if type exa > /dev/null 2>&1; then
+  alias ls="exa"
+  alias la="ls -a"
+  alias ll="ls -la"
+else
+  alias ls="ls -GF"
+  alias la="ls -A"
+  alias ll="ls -lA"
+fi
 alias dir="ls -la"
 
 # git
