@@ -142,6 +142,42 @@ return require("packer").startup(function(use)
     end
   })
 
+  -- highlight
+  use({
+    "RRethy/vim-illuminate",
+    config = function()
+      require("illuminate").configure({
+        providers = {
+          "lsp",
+          "treesitter",
+          "regex",
+        },
+        delay = 100,
+      })
+    end
+  })
+  use({
+    "norcalli/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup()
+    end
+  })
+  use({
+    "t9md/vim-quickhl",
+    config = function()
+      vim.keymap.set("n", "<leader>m", "<Plug>(quickhl-manual-this)", {})
+      vim.keymap.set("x", "<leader>m", "<Plug>(quickhl-manual-this)", {})
+      vim.keymap.set("n", "<leader>M", "<Plug>(quickhl-manual-reset)", {})
+      vim.keymap.set("x", "<leader>M", "<Plug>(quickhl-manual-reset)", {})
+    end
+  })
+  use({
+    "folke/todo-comments.nvim",
+    config = function()
+      require("todo-comments").setup({})
+    end
+  })
+
   if packer_bootstrap then
     require("packer").sync()
   end
