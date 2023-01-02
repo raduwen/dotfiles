@@ -23,3 +23,7 @@ if type nvim > /dev/null 2>&1; then
 else
   export EDITOR=vim
 fi
+
+PROMPT="%{%F{magenta}%}$USER%{%F{cyan}%}@%{%F{blue}%}%m%{%f%}(%D{%Y/%m/%d %H:%M:%S})
+$ "
+RPROMPT="[%{%F{blue}%}%~%{%f%}]"
