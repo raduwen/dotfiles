@@ -49,6 +49,25 @@ return require("packer").startup(function(use)
   -- lsp
   use("neovim/nvim-lspconfig")
   use({
+    "kkharji/lspsaga.nvim",
+    config = function()
+      require("lspsaga").setup({})
+    end
+  })
+  use({
+    "folke/lsp-colors.nvim",
+    config = function()
+      require("lsp-colors").setup({})
+    end
+  })
+  use({
+    "folke/trouble.nvim",
+    requires = "nvim-tree/nvim-web-devicons",
+    config= function()
+      require("trouble").setup({})
+    end
+  })
+  use({
     "hrsh7th/nvim-cmp",
     config = function()
       require("plugins/cmp-config")
