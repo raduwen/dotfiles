@@ -14,14 +14,18 @@ path=(
   $path
 )
 
-if [ -f $HOME/.asdf/asdf.sh ]; then
-  . $HOME/.asdf/asdf.sh
-fi
-
 if type nvim > /dev/null 2>&1; then
   export EDITOR=nvim
 else
   export EDITOR=vim
+fi
+
+if [ -f $HOME/.asdf/asdf.sh ]; then
+  . $HOME/.asdf/asdf.sh
+fi
+
+if [ -f $HOME/.cargo/env ]; then
+  . $HOME/.cargo/env
 fi
 
 PROMPT="%{%F{magenta}%}$USER%{%F{cyan}%}@%{%F{blue}%}%m%{%f%}(%D{%Y/%m/%d %H:%M:%S})
