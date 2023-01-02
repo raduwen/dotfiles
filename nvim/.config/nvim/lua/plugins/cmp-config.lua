@@ -1,4 +1,6 @@
 local lsp = require("lspconfig")
+local lspkind = require("lspkind")
+
 lsp.tsserver.setup({})
 lsp.solargraph.setup({})
 -- lsp.typeprof
@@ -25,6 +27,13 @@ cmp.setup({
     ["<C-p>"] = cmp.mapping.select_prev_item(),
     ["<C-n>"] = cmp.mapping.select_next_item(),
     ["<C-l>"] = cmp.mapping.complete(),
+  },
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = "symbol",
+      maxwidth = 50,
+      elipsis_char = "...",
+    }),
   },
 })
 cmp.setup.cmdline(":", {
