@@ -66,6 +66,7 @@ vim.opt.smartindent = true
 -- 15 folding
 vim.opt.foldenable = true
 vim.opt.foldlevelstart = 99
+vim.opt.foldcolumn = "1"
 vim.opt.foldmethod = "syntax"
 
 -- 16 diff mode
