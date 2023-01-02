@@ -76,6 +76,46 @@ return require("packer").startup(function(use)
   })
 
   use({
+    "jose-elias-alvarez/null-ls.nvim",
+    config = function()
+      local null_ls = require("null-ls")
+      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+      null_ls.setup({
+        -- TODO: https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
+        sources = {
+          null_ls.builtins.formatting.stylua,
+
+          null_ls.builtins.code_actions.eslint,
+          null_ls.builtins.diagnostics.eslint,
+          null_ls.builtins.formatting.eslint,
+
+          null_ls.builtins.formatting.rubocop,
+          null_ls.builtins.diagnostics.rubocop,
+
+          null_ls.builtins.code_actions.gitsigns
+        },
+        on_attach = function(client, bufnr)
+          vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group = augroup,
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.format({
+                bufnr = bufnr,
+                filter = function(client)
+                  return client.name == "null-ls"
+                end
+              })
+            end
+          })
+        end
+      })
+      -- vim.keymap.set("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format()<CR>", {})
+    end
+  })
+
+  use({
     "hrsh7th/nvim-cmp",
     config = function()
       require("plugins/cmp-config")
