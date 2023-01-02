@@ -1,0 +1,21 @@
+# neovim
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+./nvim.appimage　
+
+# mocword
+cargo install mocword
+wget https://github.com/high-moctane/mocword-data/releases/download/eng20200217/mocword.sqlite.gz
+gunzip mocword.sqlite.gz
+mkdir -p ~/.local/share/mocword
+mv mocword.sqlite.gz ~/.local/share/mocword
+
+# exa
+cargo install exa
+
+# sumneko lua-language-server
+sudo mkdir -p /opt/lua-language-server
+cd /opt/lua-language-server
+sudo wget https://github.com/sumneko/lua-language-server/releases/download/3.6.4/lua-language-server-3.6.4-linux-x64.tar.gz
+sudo tar xzf lua-language-server-3.6.4-linux-x64.tar.gz
+sudo rm lua-language-server-3.6.4-linux-x64.tar.gz
