@@ -222,6 +222,17 @@ return require("packer").startup(function(use)
     end
   })
 
+  -- show key map
+  use({
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup({})
+    end
+  })
+
+  -- mkdir
+  use("jghauser/mkdir.nvim")
+
   if packer_bootstrap then
     require("packer").sync()
   end
