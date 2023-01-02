@@ -250,6 +250,26 @@ return require("packer").startup(function(use)
   })
   use("LudoPinelli/comment-box.nvim")
 
+  -- match / pair
+  use({
+    "andymass/vim-matchup",
+    setup = function()
+      vim.g.matchup_matchparen_offscreen = { method = "popup" }
+    end
+  })
+  use({
+    "windwp/nvim-autopairs",
+    config = function()
+      require("nvim-autopairs").setup({})
+    end
+  })
+  use({
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end
+  })
+
   if packer_bootstrap then
     require("packer").sync()
   end

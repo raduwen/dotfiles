@@ -11,6 +11,9 @@ require("nvim-treesitter.configs").setup({
   indent = {
     enable = true,
   },
+  matchup = {
+    enable = true
+  },
 })
 
 vim.opt.foldmethod = "expr"
