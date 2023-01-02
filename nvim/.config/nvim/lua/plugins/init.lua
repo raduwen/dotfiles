@@ -58,7 +58,26 @@ return require("packer").startup(function(use)
   use("hrsh7th/cmp-buffer")
   use("hrsh7th/cmp-cmdline")
   use("hrsh7th/cmp-nvim-lsp")
-  use("onsails/lspkind.nvim")
+  use("hrsh7th/cmp-nvim-lsp-signature-help")
+  use("hrsh7th/cmp-nvim-lsp-document-symbol")
+  use("hrsh7th/cmp-nvim-lua")
+  use("hrsh7th/cmp-emoji")
+  use("hrsh7th/cmp-calc")
+  use("f3fora/cmp-spell")
+  use({
+    "yutkat/cmp-mocword",
+    requires = "nvim-lua/plenary.nvim",
+  })
+  use("uga-rosa/cmp-dictionary")
+  -- use("saadparwaiz1/cmp_luasnip")
+  use("ray-x/cmp-treesitter")
+  use({
+    "onsails/lspkind.nvim",
+    requires = "L3MON403/LuaSnip",
+  })
+
+  -- snippet
+  -- use("L3MON403/LuaSnip")
 
   if packer_bootstrap then
     require("packer").sync()

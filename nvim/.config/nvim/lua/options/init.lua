@@ -21,6 +21,8 @@ vim.opt.hlsearch = true
 vim.opt.termguicolors = true
 vim.opt.cursorcolumn = false
 vim.opt.cursorline = true
+vim.opt.spell = true
+vim.opt.spelllang = "en"
 
 --  6 multiple windows
 vim.opt.laststatus = 3
