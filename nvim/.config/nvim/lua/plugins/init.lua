@@ -233,6 +233,23 @@ return require("packer").startup(function(use)
   -- mkdir
   use("jghauser/mkdir.nvim")
 
+  -- terminal
+  use({
+    "akinsho/toggleterm.nvim",
+    config = function()
+      require("toggleterm").setup()
+    end
+  })
+
+  -- comment
+  use({
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end
+  })
+  use("LudoPinelli/comment-box.nvim")
+
   if packer_bootstrap then
     require("packer").sync()
   end
