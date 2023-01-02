@@ -1,4 +1,0 @@
-source $HOME/.zshenv
-source $HOME/.zshrc
-
-# vim: ft=zsh

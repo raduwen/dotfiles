@@ -1,7 +1,0 @@
-if [ $# -ne 1 ]; then
-  echo 'usage: git-force-remove-file-all FILE_PATH'
-  return
-fi
-git filter-branch -f --index-filter "git rm --ignore-unmatch $1" HEAD --all
-
-# vim: ft=zsh
