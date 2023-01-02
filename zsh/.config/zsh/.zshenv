@@ -5,6 +5,7 @@ typeset -U path
 path=(
   $HOME/.local/bin(N-/)
   /opt/bin(N-/)
+  /opt/lua-language-server/bin(N-/)
   /usr/local/bin(N-/)
   /usr/local/sbin(N-/)
   /usr/sbin(N-/)
