@@ -35,3 +35,7 @@ $ "
 RPROMPT="[%{%F{blue}%}%~%{%f%}]"
 
 export MOCWORD_DATA=$HOME/.local/share/mocword/mocword.sqlite
+
+function ghq-cd() {
+  cd $(ghq list -p | fzf +m)
+}
